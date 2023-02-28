@@ -1,7 +1,7 @@
 const mongoose = require('mongoose'); // Erase if already required
 
 // Declare the Schema of the Mongo model
-var userSchema = new mongoose.Schema(
+var blogSchema = new mongoose.Schema(
   {
     title: {
       type: String,
@@ -19,24 +19,24 @@ var userSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    isLikes: {
+    isLiked: {
       type: Boolean,
       default: false,
     },
-    isDilikes: {
+    isDisliked: {
       type: Boolean,
       default: false,
     },
     likes: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
+        ref: 'User',
       },
     ],
     dislikes: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
+        ref: 'User',
       },
     ],
     images: {
@@ -45,7 +45,7 @@ var userSchema = new mongoose.Schema(
     },
     author: {
       type: String,
-      required: true,
+      default: 'admin',
     },
   },
   {

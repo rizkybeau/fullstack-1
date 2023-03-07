@@ -70,6 +70,38 @@ const loginUserCtrl = asyncHandler(async function (req, res) {
     throw new Error('ID or password is not valid.');
   }
 });
+const loginAdmin = asyncHandler(async function (req, res) {
+  const { email, password } = req.body;
+  //check users sudah login?
+  //ID or password is not valid.
+
+  const findAdmin = await User.findOne({ email });
+
+  if (findAdmin.role !== 'admin') throw new Error('tidak diizinkan');
+  if (findAdmin && (await findAdmin.isPasswordMatched(password))) {
+    const varrefreshToken = generateRefreshToken(findAdmin?._id);
+    const updateUser = await User.findByIdAndUpdate(
+      findAdmin.id,
+      { refreshToken: varrefreshToken },
+      { new: true }
+    );
+    res.cookie('refreshToken', varrefreshToken, {
+      httpOnly: true,
+      maxAge: 72 * 60 * 60 * 1000,
+    });
+    //spill akun profil
+    res.json({
+      _id: findAdmin?._id,
+      firstname: findAdmin?.firstname,
+      lastname: findAdmin?.lastname,
+      email: findAdmin?.email,
+      mobile: findAdmin?.mobile,
+      token: generateToken(findAdmin?._id),
+    });
+  } else {
+    throw new Error('ID or password is not valid.');
+  }
+});
 //Logout Controller - hapus token
 const logout = asyncHandler(async (req, res) => {
   //code here - logic here: periksa token,periksa user-updatebahwauser logout
@@ -258,4 +290,5 @@ module.exports = {
   updatePassword,
   forgotPasswordToken,
   resetPassword,
+  loginAdmin,
 };

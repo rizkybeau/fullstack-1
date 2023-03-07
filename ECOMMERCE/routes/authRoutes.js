@@ -12,6 +12,7 @@ const {
   updatePassword,
   forgotPasswordToken,
   resetPassword,
+  loginAdmin,
 } = require('../controller/userController');
 const express = require('express');
 const { authMiddleware, isAdmin } = require('../middleware/authMiddleware');
@@ -20,6 +21,7 @@ const router = express.Router();
 //kalau di laravel ini endpoint sama function pada folder route
 router.post('/register', createUser);
 router.post('/login', loginUserCtrl);
+router.post('/admin-login', loginAdmin);
 router.post('/forgot-password-token', forgotPasswordToken);
 router.get('/all-users', getallUser);
 router.get('/refresh', handleRefreshToken);
